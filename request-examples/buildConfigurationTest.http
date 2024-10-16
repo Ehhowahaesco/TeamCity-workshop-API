@@ -2,6 +2,7 @@
 @host = localhost
 @user= admin
 @password = admin
+@superuser=1661904211377925784
 
 ### Generated test data
 @projectId = pid
