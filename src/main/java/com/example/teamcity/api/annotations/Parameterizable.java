@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 
 /**
- * Поля с этой аннотацией будут заполнятся переданным значением, если параметр передан.
+ * Поля с этой аннотацией будут заполняться переданным значением, если параметр передан.
  */
 
 public @interface Parameterizable {
