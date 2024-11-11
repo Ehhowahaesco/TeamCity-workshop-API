@@ -1,41 +1,46 @@
 package com.example.teamcity.ui;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
 import com.example.teamcity.api.enums.Endpoint;
 import com.example.teamcity.api.models.*;
-import com.example.teamcity.ui.pages.*;
-import com.example.teamcity.ui.pages.admin.*;
+import com.example.teamcity.api.requests.UncheckedRequests;
+import com.example.teamcity.api.spec.Specifications;
+import com.example.teamcity.ui.pages.ProjectPage;
+import com.example.teamcity.ui.pages.ProjectsPage;
+import com.example.teamcity.ui.pages.admin.CreateProjectPage;
 import org.testng.annotations.Test;
 
 import static io.qameta.allure.Allure.step;
 
 @Test(groups = {"Regression"})
 public class CreateProjectTest extends BaseUiTest {
-    private static  final String REPO_URL = "https://github.com/Ehhowahaesco/TeamCity-workshop-API";
+
     @Test(description = "User should be able to create project", groups = {"Positive"})
     public void userCreatesProject() {
-
         // подготовка окружения
-        step("Login as user");
         loginAs(testData.getUser());
 
         // взаимодействие с UI
-
         CreateProjectPage.open("_Root")
                 .createForm(REPO_URL)
-                        .setupProject(testData.getProject().getName(), testData.getBuildType().getName());
+                .setupProject(testData.getProject().getName(), testData.getBuildType().getName());
 
         // проверка состояния API
         // (корректность отправки данных с UI на API)
         var createdProject = superUserCheckRequests.<Project>getRequest(Endpoint.PROJECTS).read("name:" + testData.getProject().getName());
         softy.assertNotNull(createdProject);
-        step("Check that all entities (project, build type) was successfully created with correct data on API level");
 
         // проверка состояния UI
         // (корректность считывания данных и отображение данных на UI)
         ProjectPage.open(createdProject.getId())
-                        .title.shouldHave(Condition.exactText(testData.getProject().getName()));
-        step("Check that project is visible on Projects Page (http://localhost:8111/favorite/projects)");
+                .titleAllProjects.shouldHave(Condition.exactText(testData.getProject().getName()));
+
+        var foundProjects = ProjectsPage.open()
+                .getProjects().stream()
+                .anyMatch(project -> project.getName().equals(testData.getProject().getName()));
+
+        softy.assertTrue(foundProjects);
     }
 
     @Test(description = "User should not be able to craete project without name", groups = {"Negative"})

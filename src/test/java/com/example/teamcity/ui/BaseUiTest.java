@@ -7,13 +7,17 @@ import com.codeborne.selenide.Configuration;
 import com.example.teamcity.api.config.Config;
 import com.example.teamcity.api.enums.*;
 import com.example.teamcity.api.models.*;
-import com.example.teamcity.ui.pages.*;
-import org.openqa.selenium.chrome.*;
+import com.example.teamcity.api.requests.UncheckedRequests;
+import com.example.teamcity.api.spec.Specifications;
+import com.example.teamcity.ui.pages.LoginPage;
 import org.testng.annotations.*;
 
 import java.util.*;
 
 public class BaseUiTest extends BaseTest {
+    protected static  final String REPO_URL = "https://github.com/Ehhowahaesco/TeamCity-workshop-API";
+    protected static  final String INCORRECT_REPO_URL = "avs";
+
     @BeforeSuite(alwaysRun = true)
     public void setUpUiTest(){
         Configuration.browser = Config.getProperty("browser");
@@ -31,6 +35,14 @@ public class BaseUiTest extends BaseTest {
         superUserCheckRequests.getRequest(Endpoint.USERS).create(testData.getUser());
         LoginPage.open().login(testData.getUser());
     }
+     protected void loginAsForBuildType() {
+         superUserCheckRequests.getRequest(Endpoint.USERS).create(testData.getUser());
+
+         var userCheckRequests = new UncheckedRequests(Specifications.authSpec(testData.getUser()));
+
+         userCheckRequests.getRequest(Endpoint.PROJECTS).create(testData.getProject());
+         LoginPage.open().login(testData.getUser());
+     }
 
     @AfterMethod(alwaysRun = true)
     public void closeWebDriver(){
