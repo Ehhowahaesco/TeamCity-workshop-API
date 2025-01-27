@@ -9,7 +9,7 @@ jobs:
 
     # Собирается бекенд и деплоится на стейдж/review app
   frontend:
-    uses: ./.github/workflows/frontend-stage
+    uses: ./.github/workflows/frontend-stage.yml
 
     # Прогоняются API тесты
   automation-api:
