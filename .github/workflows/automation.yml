@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
       - name: add permission
-        run: chmod +x ./mvnw
+        run: chmod +x mvnw
 
       - name: add two permission
         run: chmod +x .swagger-coverage-commandline/bin/swagger-coverage-commandline
