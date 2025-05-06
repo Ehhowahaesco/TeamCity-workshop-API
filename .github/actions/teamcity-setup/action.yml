@@ -62,10 +62,6 @@ runs:
         jetbrains/teamcity-server:2023.11.1
     
 
-    - name: sleep 150
-      shell: bash
-      run: sleep 150
-
     - name: Setup superUserToken environment variable
       shell: bash
       run: |
