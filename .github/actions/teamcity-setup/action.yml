@@ -65,8 +65,8 @@ runs:
     - name: Setup superUserToken environment variable
       shell: bash
       run: |
-        sleep 60
-        echo "docker logs teamcity-server"
+        sleep 10
+        cat docker logs teamcity-server
 
     - name: Set up superUserToken config property
       shell: bash
