@@ -70,7 +70,7 @@ runs:
 
     - name: Setup superUserToken environment variable
       shell: bash
-      run: docker logs teamcity-server
+      run: docker exec teamcity-server cat /data/teamcity_server/datadir/system/global.auth.token
 
     - name: Setup TeamCity server
       shell: bash
