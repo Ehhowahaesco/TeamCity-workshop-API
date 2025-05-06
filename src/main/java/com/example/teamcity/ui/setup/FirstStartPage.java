@@ -19,7 +19,7 @@ public class FirstStartPage extends BasePage {
     }
 
     public static FirstStartPage open() {
-        return Selenide.open("/", FirstStartPage.class);
+        return Selenide.open("localhost:8111/mnt", FirstStartPage.class);
     }
 
     public FirstStartPage setupFirstStart() {
