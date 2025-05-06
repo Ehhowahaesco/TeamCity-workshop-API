@@ -60,26 +60,18 @@ runs:
         -v $(pwd)/tmp/teamcity_server/logs:/opt/teamcity/logs  \
         -p 8111:8111 \
         jetbrains/teamcity-server:2023.11.1
-    
 
-    - name: Setup superUserToken environment variable
-      shell: bash
-      run: |
-        # Ждать появления токена в логах (макс 2 минуты)
-        timeout 120 bash -c 'until docker logs teamcity-server 2>&1 | grep -q "Super user authentication token"; do sleep 2; done'
-        TOKEN=$(docker logs teamcity-server 2>&1 | grep -oP "Super user authentication token: \K\d+")
+    
 
     - name: Setup TeamCity server
       shell: bash
-     # Настройка сервера при первом запуске (принятие лицензии, выбор базы данных и тд), реализованная в виде теста
-      run: |
-       chmod +x mvnw
-       ./mvnw test -Dtest='com.example.teamcity.${{inputs.package}}.**' -Dgroups=Regression
+      # Настройка сервера при первом запуске (принятие лицензии, выбор базы данных и тд), реализованная в виде теста
+      run: ./mvnw clean test -Dtest=SetupServerTest#setupTeamCityServerTest
+
+    - name: Setup superUserToken environment variable
+      shell: bash
+      run: echo "SUPER_USER_TOKEN=$(docker logs teamcity-server | grep 'Super user authentication token' | tail -n 1 | awk '{print $6}')" >> $GITHUB_ENV
 
     - name: Set up superUserToken config property
       shell: bash
       run: echo "superUserToken=$SUPER_USER_TOKEN" >> src/main/resources/config.properties
-
-
-        
-

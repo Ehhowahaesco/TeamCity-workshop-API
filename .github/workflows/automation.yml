@@ -1,3 +1,68 @@
+#name: Run tests
+#
+#on:
+#  workflow_call:
+#    inputs:
+#      package:
+#        description: api | ui
+#        required: true
+#        type: string
+#
+#jobs:
+#  validate-checkstyle:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '17'
+#          distribution: 'zulu'
+#      - name: add permission
+#        run: chmod +x mvnw
+#
+#      - name: add two permission
+#        run: chmod +x .swagger-coverage-commandline/bin/swagger-coverage-commandline
+#
+#
+#
+#      - name: Validate Checkstyle
+#        run: ./mvnw validate
+#
+#  run-tests:
+#    needs: validate-checkstyle
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: TeamCity Setup
+#        uses: ./.github/actions/teamcity-setup
+#
+#      - name: Run tests
+#        continue-on-error: true
+#        # Указываем группу, чтобы не запустить тесты, связанные с сетапом TeamCity
+#        run: ./mvnw test -Dtest='com.example.teamcity.${{ inputs.package }}.**' -Dgroups=Regression
+#
+#        # Создаем репорт с покрытием API тестов, основанном на swagger
+#        # Документация: https://github.com/viclovsky/swagger-coverage
+#        # Обязательно добавить фильтр SwaggerCoverageRestAssured в RestAssured
+#      - name: Run swagger coverage
+#        continue-on-error: true
+#        if: ${{inputs.package == 'api'}}
+#        run: |
+#          chmod +x .swagger-coverage-commandline/bin/swagger-coverage-commandline
+#          .swagger-coverage-commandline/bin/swagger-coverage-commandline -s http://$HOST:8111/app/rest/swagger.json -i target/swagger-coverage-output
+#
+#        # Сохраняем swagger report в артефакты Github actions
+#      - name: Save swagger coverage
+#        uses: actions/upload-artifact@v4
+#        if: ${{inputs.package == 'api'}}
+#        with:
+#          name: swagger-coverage
+#          path: |
+#             swagger-coverage-report.html
+#             swagger-coverage-results.json
 name: Run tests
 
 on:
@@ -19,13 +84,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-      - name: add permission
-        run: chmod +x mvnw
-
-      - name: add two permission
-        run: chmod +x .swagger-coverage-commandline/bin/swagger-coverage-commandline
-
-
 
       - name: Validate Checkstyle
         run: ./mvnw validate
@@ -43,23 +101,3 @@ jobs:
         continue-on-error: true
         # Указываем группу, чтобы не запустить тесты, связанные с сетапом TeamCity
         run: ./mvnw test -Dtest='com.example.teamcity.${{ inputs.package }}.**' -Dgroups=Regression
-
-        # Создаем репорт с покрытием API тестов, основанном на swagger
-        # Документация: https://github.com/viclovsky/swagger-coverage
-        # Обязательно добавить фильтр SwaggerCoverageRestAssured в RestAssured
-      - name: Run swagger coverage
-        continue-on-error: true
-        if: ${{inputs.package == 'api'}}
-        run: |
-          chmod +x .swagger-coverage-commandline/bin/swagger-coverage-commandline
-          .swagger-coverage-commandline/bin/swagger-coverage-commandline -s http://$HOST:8111/app/rest/swagger.json -i target/swagger-coverage-output
-
-        # Сохраняем swagger report в артефакты Github actions
-      - name: Save swagger coverage
-        uses: actions/upload-artifact@v4
-        if: ${{inputs.package == 'api'}}
-        with:
-          name: swagger-coverage
-          path: |
-             swagger-coverage-report.html
-             swagger-coverage-results.json
