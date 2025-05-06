@@ -64,7 +64,9 @@ runs:
 
     - name: Setup superUserToken environment variable
       shell: bash
-      run: echo "SUPER_USER_TOKEN=$(docker logs teamcity-server | grep  'Super user authentication token:' |  awk '{print $6}' >> $GITHUB_ENV)" >> $GITHUB_ENV
+      run: |
+        sleep 60
+        echo "SUPER_USER_TOKEN=$(docker logs teamcity-server | grep  'Super user authentication token' |  awk '{print $6}' >> $GITHUB_ENV)" >> $GITHUB_ENV
 
     - name: Set up superUserToken config property
       shell: bash
