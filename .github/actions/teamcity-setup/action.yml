@@ -60,23 +60,29 @@ runs:
         -v $(pwd)/tmp/teamcity_server/logs:/opt/teamcity/logs  \
         -p 8111:8111 \
         jetbrains/teamcity-server:2023.11.1
-        
+    - name: Cat config
+      shell: bash
+      run: cat src/main/resources/config.properties
+
+    - name: sleep 150
+      shell: bash
+      run: sleep 150
 
     - name: Setup superUserToken environment variable
       shell: bash
+      run: docker logs teamcity-server
+
+    - name: Setup TeamCity server
+      shell: bash
+     # Настройка сервера при первом запуске (принятие лицензии, выбор базы данных и тд), реализованная в виде теста
       run: |
-       sleep 120 
-       docker logs teamcity-server
+       chmod +x mvnw
+       ./mvnw test -Dtest='com.example.teamcity.${{inputs.package}}.**' -Dgroups=Regression
 
     - name: Set up superUserToken config property
       shell: bash
       run: echo "superUserToken=$SUPER_USER_TOKEN" >> src/main/resources/config.properties
 
-    - name: Setup TeamCity server
-      shell: bash
-      # Настройка сервера при первом запуске (принятие лицензии, выбор базы данных и тд), реализованная в виде теста
-      run: |
-        chmod +x mvnw
-        ./mvnw test -Dtest='com.example.teamcity.${{inputs.package}}.**' -Dgroups=Regression
+
         
 
