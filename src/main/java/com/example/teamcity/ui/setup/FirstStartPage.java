@@ -3,6 +3,7 @@ package com.example.teamcity.ui.setup;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.example.teamcity.api.config.Config;
 import com.example.teamcity.ui.pages.BasePage;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -19,7 +20,7 @@ public class FirstStartPage extends BasePage {
     }
 
     public static FirstStartPage open() {
-        return Selenide.open("/", FirstStartPage.class);
+        return Selenide.open(Config.getProperty("host"), FirstStartPage.class);
     }
 
     public FirstStartPage setupFirstStart() {
