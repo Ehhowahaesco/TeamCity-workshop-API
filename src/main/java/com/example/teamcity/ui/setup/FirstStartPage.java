@@ -20,7 +20,7 @@ public class FirstStartPage extends BasePage {
     }
 
     public static FirstStartPage open() {
-        return Selenide.open(Config.getProperty("host"), FirstStartPage.class);
+        return Selenide.open("/", FirstStartPage.class);
     }
 
     public FirstStartPage setupFirstStart() {
