@@ -21,7 +21,7 @@ public class BaseUiTest extends BaseTest {
     @BeforeSuite(alwaysRun = true)
     public void setUpUiTest(){
         Configuration.browser = Config.getProperty("browser");
-        Configuration.baseUrl = "http://" + Config.getProperty("host") + Config.getProperty("port");
+        Configuration.baseUrl = "http://" + Config.getProperty("host");
         Configuration.remote = Config.getProperty("remote");
         Configuration.browserSize = Config.getProperty("browserSize");
 
