@@ -24,6 +24,10 @@ runs:
       shell: bash
       run: echo "host=$HOST:8111" >> src/main/resources/config.properties
 
+    - name: Set up host config property
+      shell: bash
+      run: cat src/main/resources/config.properties
+
     - name: Pull Selenoid browsers
       shell: bash
       # Парсить browsers.json и будет docker pull все браузеры
